@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Remédios - Lembrete Diário</title>
+    <!-- Carregando Tailwind CSS para estilização responsiva e acessível -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carregando fonte Inter para máxima legibilidade -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Remédios - Lembrete Diário</title>
+    <!-- Carregando Tailwind CSS para estilização responsiva e acessível -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carregando fonte Inter para máxima legibilidade -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+                            800: '#1e3a8a',
+                            900: '#0f172a', // Azul marinho escuro para altíssimo contraste
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-100 text-navy-900 font-sans antialiased selection:bg-blue-200 min-h-screen pb-16">
+
+    <!-- CABEÇALHO: Relógio, Data em Tempo Real e Ações Rápidas -->
+    <header class="bg-white border-b-4 border-slate-300 shadow-sm sticky top-0 z-20">
+        <div class="max-w-3xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-center sm:text-left">
+                <span class="inline-block bg-blue-100 text-navy-900 font-extrabold text-sm uppercase tracking-wider px-3 py-1 rounded-full mb-1">
+                    Hora Certa
+                </span>
+                <!-- Relógio Digital Gigante -->
+                <div id="live-clock" class="text-5xl sm:text-6xl font-black text-navy-900 tracking-tight leading-none">
+                    00:00
+                </div>
+                <!-- Data por Extenso -->
+                <div id="live-date" class="text-xl sm:text-2xl font-bold text-slate-700 mt-1 capitalize">
+                    Carregando data...
+                </div>
+            </div>
+
+            <!-- Botões de Teste e Novo Dia -->
+            <div class="flex flex-col sm:items-end gap-3 w-full sm:w-auto">
+                <button onclick="testarAlarme()" type="button"
+                    class="w-full sm:w-auto flex items-center justify-center gap-2 bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-950 border-2 border-amber-500 font-extrabold text-lg px-5 py-3 rounded-2xl shadow-sm transition-transform active:scale-95">
+                    <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+                    Testar Alarme
+                </button>
+
+                <button onclick="abrirModalReiniciar()" type="button"
+                    class="w-full sm:w-auto flex items-center justify-center gap-2 bg-slate-200 hover:bg-slate-300 text-navy-900 font-bold text-base px-4 py-2.5 rounded-xl transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                    </svg>
+                    Reiniciar Dia
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="max-w-3xl mx-auto px-4 pt-6 space-y-8">
+
+        <!-- BARRA DE PROGRESSO DO DIA -->
+        <section aria-label="Resumo do dia" class="bg-white rounded-3xl p-6 border-2 border-slate-300 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <h1 class="text-2xl sm:text-3xl font-black text-navy-900">
+                    Seus Remédios de Hoje
+                </h1>
+                <span id="progress-text" class="text-xl font-extrabold text-blue-800 bg-blue-50 px-4 py-1.5 rounded-xl border border-blue-200">
+                    0 de 0 tomados
+                </span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-5 overflow-hidden border border-slate-300">
+                <div id="progress-bar" class="bg-emerald-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </section>
+
+        <!-- BOTÃO DESTAQUE PARA ADICIONAR REMÉDIO -->
+        <div>
+            <button id="btn-toggle-form" onclick="alternarFormulario()" type="button"
+                class="w-full bg-blue-800 hover:bg-blue-900 active:bg-blue-950 text-white font-extrabold text-2xl py-5 px-6 rounded-3xl shadow-md flex items-center justify-center gap-3 transition-transform active:scale-98 border-2 border-blue-950">
+                <svg id="icon-plus" class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span id="text-toggle-form">Adicionar Novo Remédio</span>
+            </button>
+        </div>
+
+        <!-- FORMULÁRIO DE CADASTRO (Inicialmente oculto para manter a tela limpa) -->
+        <section id="form-section" class="hidden bg-white rounded-3xl p-6 sm:p-8 border-4 border-blue-800 shadow-lg">
+            <h2 class="text-2xl sm:text-3xl font-black text-navy-900 mb-6 flex items-center gap-3">
+                <span class="bg-blue-800 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl">+</span>
+                Cadastrar Remédio
+            </h2>
+
+            <form id="med-form" onsubmit="salvarMedicamento(event)" class="space-y-6">
+                <!-- Nome do Remédio -->
+                <div>
+                    <label for="med-name" class="block text-xl font-extrabold text-navy-900 mb-2">
+                        1. Nome do Remédio *
+                    </label>
+                    <input type="text" id="med-name" required placeholder="Ex: Losartana, Dipirona..."
+                        class="w-full text-2xl font-bold text-navy-900 bg-slate-50 border-3 border-slate-400 focus:border-blue-800 focus:bg-white rounded-2xl px-5 py-4 outline-none transition-colors">
+                </div>
+
+                <!-- Horário e Tipo lado a lado em telas maiores -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Horário -->
+                    <div>
+                        <label for="med-time" class="block text-xl font-extrabold text-navy-900 mb-2">
+                            2. Horário de Tomar *
+                        </label>
+                        <input type="time" id="med-time" required
+                            class="w-full text-3xl font-black text-navy-900 bg-slate-50 border-3 border-slate-400 focus:border-blue-800 focus:bg-white rounded-2xl px-5 py-3.5 outline-none">
+                    </div>
+
+                    <!-- Tipo de Medicamento -->
+                    <div>
+                        <label for="med-type" class="block text-xl font-extrabold text-navy-900 mb-2">
+                            3. Formato *
+                        </label>
+                        <select id="med-type"
+                            class="w-full text-2xl font-bold text-navy-900 bg-slate-50 border-3 border-slate-400 focus:border-blue-800 focus:bg-white rounded-2xl px-5 py-4 outline-none">
+                            <option value="comprimido">💊 Comprimido</option>
+                            <option value="gotas">💧 Gotas</option>
+                            <option value="capsula">胶囊 Cápsula</option>
+                            <option value="xarope">🥄 Xarope / Líquido</option>
+                            <option value="outro">🩺 Outro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dosagem / Instruções -->
+                <div>
+                    <label for="med-dosage" class="block text-xl font-extrabold text-navy-900 mb-2">
+                        4. Quantidade e Instruções *
+                    </label>
+                    <input type="text" id="med-dosage" required placeholder="Ex: 1 comprimido após o café da manhã"
+                        class="w-full text-2xl font-bold text-navy-900 bg-slate-50 border-3 border-slate-400 focus:border-blue-800 focus:bg-white rounded-2xl px-5 py-4 outline-none">
+                </div>
+
+                <!-- Botões de Ação do Formulário -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                    <button type="submit"
+                        class="flex-1 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-2xl py-5 px-6 rounded-2xl shadow-md transition-transform active:scale-98">
+                        SALVAR REMÉDIO ✓
+                    </button>
+                    <button type="button" onclick="alternarFormulario()"
+                        class="sm:w-1/3 bg-slate-200 hover:bg-slate-300 text-navy-900 font-extrabold text-xl py-5 px-6 rounded-2xl transition-colors">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- LISTA DE MEDICAMENTOS -->
+        <section aria-label="Lista de medicamentos" id="med-list" class="space-y-6">
+            <!-- Os cartões dos remédios serão inseridos aqui via JavaScript -->
+        </section>
+
+    </main>
+
+    <!-- NOTIFICAÇÃO FLUTUANTE (Toast de feedback acessível) -->
+    <div id="toast-box" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 hidden w-11/12 max-w-lg">
+        <div class="bg-navy-900 text-white border-2 border-slate-600 rounded-2xl px-6 py-4 shadow-2xl flex items-center gap-4">
+            <span id="toast-icon" class="text-3xl">✅</span>
+            <p id="toast-message" class="text-xl font-bold leading-snug"></p>
+        </div>
+    </div>
+
+    <!-- MODAL DE ALARME EM TELA CHEIA (Impossível de ignorar) -->
+    <div id="alarm-modal" role="dialog" aria-modal="true" aria-labelledby="alarm-title"
+        class="fixed inset-0 z-50 hidden bg-amber-500 flex flex-col items-center justify-center p-4 sm:p-8 text-center">
+        <div class="bg-white border-8 border-navy-900 rounded-3xl max-w-2xl w-full p-6 sm:p-10 shadow-2xl space-y-6">
+            <!-- Ícone Pulsante -->
+            <div class="mx-auto w-24 h-24 bg-amber-100 border-4 border-amber-600 rounded-full flex items-center justify-center animate-bounce">
+                <svg class="w-14 h-14 text-amber-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+            </div>
+
+            <div class="space-y-2">
+                <span class="inline-block bg-amber-200 text-amber-950 font-black text-xl px-4 py-1.5 rounded-full uppercase tracking-wide">
+                    ⏰ Hora do Remédio!
+                </span>
+                <div id="alarm-time" class="text-5xl sm:text-6xl font-black text-navy-900">
+                    08:00
+                </div>
+            </div>
+
+            <div class="bg-slate-100 border-2 border-slate-300 rounded-2xl p-5 space-y-2">
+                <div id="alarm-icon" class="text-5xl mb-1">💊</div>
+                <h2 id="alarm-title" class="text-3xl sm:text-4xl font-black text-navy-900">
+                    Nome do Remédio
+                </h2>
+                <p id="alarm-dosage" class="text-2xl font-bold text-slate-700">
+                    1 comprimido
+                </p>
+            </div>
+
+            <!-- Botão Gigante de Confirmação -->
+            <button onclick="confirmarAlarme()" type="button"
+                class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-2xl sm:text-3xl py-6 px-6 rounded-2xl shadow-xl border-4 border-emerald-900 transition-transform active:scale-95">
+                ✓ CONFIRMAR QUE TOMEI
+            </button>
+
+            <button onclick="silenciarAlarmeTemporario()" type="button"
+                class="w-full bg-slate-200 hover:bg-slate-300 text-navy-900 font-extrabold text-xl py-4 px-6 rounded-2xl">
+                Fechar Aviso (Lembrar depois)
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO PERSONALIZADO (Para Reiniciar Dia ou Excluir Remédio, sem usar confirm()) -->
+    <div id="confirm-modal" role="dialog" aria-modal="true"
+        class="fixed inset-0 z-50 hidden bg-navy-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border-4 border-navy-900 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 text-center">
+            <h3 id="confirm-modal-title" class="text-2xl sm:text-3xl font-black text-navy-900">
+                Tem certeza?
+            </h3>
+            <p id="confirm-modal-desc" class="text-xl font-semibold text-slate-700">
+                Descrição da ação.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                <button id="confirm-modal-yes" type="button"
+                    class="flex-1 bg-blue-800 hover:bg-blue-900 text-white font-black text-xl py-4 px-6 rounded-2xl">
+                    Sim, Confirmar
+                </button>
+                <button onclick="fecharModalConfirmacao()" type="button"
+                    class="flex-1 bg-slate-200 hover:bg-slate-300 text-navy-900 font-extrabold text-xl py-4 px-6 rounded-2xl">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ESTADO GLOBAL E ARMAZENAMENTO LOCAL
+         */
+        const STORAGE_KEY = 'meus_remedios_app_v1';
+        let medicamentos = [];
+        let alarmeAtivoId = null;
+        let intervaloSomAlarme = null;
+        let audioCtx = null;
+        let medicamentosSilenciadosNesteMinuto = new Set();
+        let ultimoMinutoVerificado = '';
+
+        // Exemplos iniciais para facilitar o primeiro uso
+        const EXEMPLOS_INICIAIS = [
+            {
+                id: 'med-1',
+                nome: 'Losartana 50mg',
+                horario: '08:00',
+                dosagem: '1 comprimido após o café da manhã',
+                tipo: 'comprimido',
+                tomado: false,
+                horaTomado: null
+            },
+            {
+                id: 'med-2',
+                nome: 'Vitamina D',
+                horario: '12:30',
+                dosagem: '1 cápsula junto com o almoço',
+                tipo: 'capsula',
+                tomado: false,
+                horaTomado: null
+            },
+            {
+                id: 'med-3',
+                nome: 'Sinvastatina 20mg',
+                horario: '20:00',
+                dosagem: '1 comprimido antes de dormir',
+                tipo: 'comprimido',
+                tomado: false,
+                horaTomado: null
+            }
+        ];
+
+        /**
+         * INICIALIZAÇÃO DO APLICATIVO
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarDados();
+            atualizarRelogioEVerificarAlarme();
+            setInterval(atualizarRelogioEVerificarAlarme, 1000);
+        });
+
+        /**
+         * GERENCIAMENTO DE DADOS (LocalStorage)
+         */
+        function carregarDados() {
+            try {
+                const salvos = localStorage.getItem(STORAGE_KEY);
+                if (salvos) {
+                    medicamentos = JSON.parse(salvos);
+                } else {
+                    medicamentos = [...EXEMPLOS_INICIAIS];
+                    salvarNoStorage();
+                }
+            } catch (erro) {
+                console.error('Erro ao ler localStorage:', erro);
+                medicamentos = [...EXEMPLOS_INICIAIS];
+            }
+            renderizarLista();
+        }
+
+        function salvarNoStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(medicamentos));
+            } catch (erro) {
+                console.error('Erro ao salvar no localStorage:', erro);
+            }
+        }
+
+        /**
+         * RELÓGIO EM TEMPO REAL E VERIFICADOR DE ALARMES
+         */
+        function atualizarRelogioEVerificarAlarme() {
+            const agora = new Date();
+            const horas = String(agora.getHours()).padStart(2, '0');
+            const minutos = String(agora.getMinutes()).padStart(2, '0');
+            const horarioAtual = `${horas}:${minutos}`;
+
+            // Atualiza Relógio
+            document.getElementById('live-clock').textContent = horarioAtual;
+
+            // Atualiza Data por extenso em Português
+            const opcoesData = { weekday: 'long', day: 'numeric', month: 'long' };
+            const dataFormatada = agora.toLocaleDateString('pt-BR', opcoesData);
+            document.getElementById('live-date').textContent = dataFormatada;
+
+            // Limpa lista de silenciados se o minuto mudou
+            if (horarioAtual !== ultimoMinutoVerificado) {
+                medicamentosSilenciadosNesteMinuto.clear();
+                ultimoMinutoVerificado = horarioAtual;
+            }
+
+            // Verifica se algum remédio bate com o horário atual e ainda não foi tomado
+            if (!alarmeAtivoId) {
+                const remedioParaTomar = medicamentos.find(med =>
+                    med.horario === horarioAtual &&
+                    !med.tomado &&
+                    !medicamentosSilenciadosNesteMinuto.has(med.id)
+                );
+
+                if (remedioParaTomar) {
+                    dispararAlarme(remedioParaTomar);
+                }
+            }
+        }
+
+        /**
+         * SISTEMA DE ÁUDIO (Web Audio API - Sem arquivos externos)
+         */
+        function inicializarAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Som suave e alegre de confirmação quando marca como tomado
+        function tocarSomConfirmacao() {
+            try {
+                inicializarAudio();
+                if (!audioCtx) return;
+
+                const agora = audioCtx.currentTime;
+                const notas = [523.25, 659.25, 783.99]; // Dó, Mi, Sol
+
+                notas.forEach((freq, index) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, agora + index * 0.12);
+
+                    gain.gain.setValueAtTime(0.01, agora + index * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.25, agora + index * 0.12 + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.001, agora + index * 0.12 + 0.4);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(agora + index * 0.12);
+                    osc.stop(agora + index * 0.12 + 0.45);
+                });
+            } catch (e) {
+                console.warn('Áudio não suportado ou bloqueado pelo navegador:', e);
+            }
+        }
+
+        // Toque de alarme agradável, claro e audível
+        function tocarPulsoAlarme() {
+            try {
+                inicializarAudio();
+                if (!audioCtx) return;
+
+                const agora = audioCtx.currentTime;
+                const sequencia = [587.33, 880, 587.33, 880]; // Ré5 - Lá5
+
+                sequencia.forEach((freq, i) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, agora + i * 0.22);
+
+                    gain.gain.setValueAtTime(0.01, agora + i * 0.22);
+                    gain.gain.exponentialRampToValueAtTime(0.35, agora + i * 0.22 + 0.05);
+                    gain.gain.exponentialRampToValueAtTime(0.001, agora + i * 0.22 + 0.2);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(agora + i * 0.22);
+                    osc.stop(agora + i * 0.22 + 0.21);
+                });
+            } catch (e) {
+                console.warn('Áudio aguardando interação:', e);
+            }
+        }
+
+        /**
+         * CONTROLE DO MODAL DE ALARME
+         */
+        function dispararAlarme(medicamento) {
+            alarmeAtivoId = medicamento.id;
+            const infoIcone = obterDetalhesTipo(medicamento.tipo);
+
+            document.getElementById('alarm-time').textContent = medicamento.horario;
+            document.getElementById('alarm-icon').innerHTML = infoIcone.svgGrande;
+            document.getElementById('alarm-title').textContent = medicamento.nome;
+            document.getElementById('alarm-dosage').textContent = medicamento.dosagem;
+
+            document.getElementById('alarm-modal').classList.remove('hidden');
+
+            // Toca imediatamente e repete a cada 2.5 segundos
+            tocarPulsoAlarme();
+            clearInterval(intervaloSomAlarme);
+            intervaloSomAlarme = setInterval(tocarPulsoAlarme, 2500);
+        }
+
+        function pararSomAlarme() {
+            clearInterval(intervaloSomAlarme);
+            intervaloSomAlarme = null;
+        }
+
+        function confirmarAlarme() {
+            pararSomAlarme();
+            document.getElementById('alarm-modal').classList.add('hidden');
+
+            if (alarmeAtivoId && alarmeAtivoId !== 'teste-alarme') {
+                marcarComoTomado(alarmeAtivoId, true);
+            } else {
+                tocarSomConfirmacao();
+                mostrarToast('Alarme testado com sucesso!', '🔔');
+            }
+            alarmeAtivoId = null;
+        }
+
+        function silenciarAlarmeTemporario() {
+            pararSomAlarme();
+            document.getElementById('alarm-modal').classList.add('hidden');
+            if (alarmeAtivoId && alarmeAtivoId !== 'teste-alarme') {
+                medicamentosSilenciadosNesteMinuto.add(alarmeAtivoId);
+            }
+            alarmeAtivoId = null;
+        }
+
+        function testarAlarme() {
+            inicializarAudio();
+            const proximoNaoTomado = medicamentos.find(m => !m.tomado);
+            const exemploTeste = proximoNaoTomado
+                ? { ...proximoNaoTomado, id: 'teste-alarme' }
+                : {
+                    id: 'teste-alarme',
+                    nome: 'Remédio de Exemplo',
+                    horario: document.getElementById('live-clock').textContent,
+                    dosagem: '1 comprimido com um copo de água',
+                    tipo: 'comprimido'
+                };
+            dispararAlarme(exemploTeste);
+        }
+
+        /**
+         * RENDERIZAÇÃO DA LISTA E INTERAÇÕES DOS CARTÕES
+         */
+        function obterDetalhesTipo(tipo) {
+            const mapa = {
+                comprimido: {
+                    label: 'Comprimido',
+                    svg: `<svg class="w-10 h-10 text-blue-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`,
+                    svgGrande: `<svg class="w-16 h-16 mx-auto text-blue-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><line x1="6" y1="12" x2="18" y2="12"/></svg>`
+                },
+                gotas: {
+                    label: 'Gotas',
+                    svg: `<svg class="w-10 h-10 text-sky-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
+                    svgGrande: `<svg class="w-16 h-16 mx-auto text-sky-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
+                },
+                capsula: {
+                    label: 'Cápsula',
+                    svg: `<svg class="w-10 h-10 text-indigo-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="8" width="16" height="8" rx="4" transform="rotate(-35 12 12)"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/></svg>`,
+                    svgGrande: `<svg class="w-16 h-16 mx-auto text-indigo-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="8" width="16" height="8" rx="4" transform="rotate(-35 12 12)"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/></svg>`
+                },
+                xarope: {
+                    label: 'Xarope',
+                    svg: `<svg class="w-10 h-10 text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3h6v3H9z"/><path d="M7 6h10l1 14H6L7 6z"/><line x1="9" y1="12" x2="15" y2="12"/></svg>`,
+                    svgGrande: `<svg class="w-16 h-16 mx-auto text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 3h6v3H9z"/><path d="M7 6h10l1 14H6L7 6z"/><line x1="9" y1="12" x2="15" y2="12"/></svg>`
+                },
+                outro: {
+                    label: 'Medicamento',
+                    svg: `<svg class="w-10 h-10 text-teal-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="4"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`,
+                    svgGrande: `<svg class="w-16 h-16 mx-auto text-teal-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="4"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>`
+                }
+            };
+            return mapa[tipo] || mapa.outro;
+        }
+
+        function renderizarLista() {
+            const listaEl = document.getElementById('med-list');
+
+            // Ordena sempre por horário (do mais cedo para o mais tarde)
+            medicamentos.sort((a, b) => a.horario.localeCompare(b.horario));
+
+            // Atualiza barra de progresso
+            const total = medicamentos.length;
+            const tomados = medicamentos.filter(m => m.tomado).length;
+            const porcentagem = total > 0 ? Math.round((tomados / total) * 100) : 0;
+
+            document.getElementById('progress-text').textContent = `${tomados} de ${total} tomados`;
+            document.getElementById('progress-bar').style.width = `${porcentagem}%`;
+
+            if (total === 0) {
+                listaEl.innerHTML = `
+                    <div class="bg-white rounded-3xl p-10 text-center border-2 border-dashed border-slate-400 space-y-3">
+                        <p class="text-2xl font-extrabold text-navy-900">Nenhum remédio cadastrado ainda.</p>
+                        <p class="text-xl text-slate-700">Toque no botão azul acima para adicionar seu primeiro remédio.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listaEl.innerHTML = medicamentos.map(med => {
+                const infoTipo = obterDetalhesTipo(med.tipo);
+                const cardClasses = med.tomado
+                    ? 'bg-emerald-50/90 border-4 border-emerald-600'
+                    : 'bg-white border-4 border-slate-300 shadow-md';
+
+                return `
+                    <article class="${cardClasses} rounded-3xl p-6 transition-all">
+                        <!-- Linha Superior: Horário + Ícone + Botão Excluir -->
+                        <div class="flex items-start justify-between gap-4 border-b-2 ${med.tomado ? 'border-emerald-200' : 'border-slate-200'} pb-4 mb-4">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-slate-100 border-2 border-slate-300 p-3 rounded-2xl shrink-0">
+                                    ${infoTipo.svg}
+                                </div>
+                                <div>
+                                    <span class="block text-sm font-extrabold uppercase tracking-wider text-slate-600">
+                                        Horário • ${infoTipo.label}
+                                    </span>
+                                    <span class="text-4xl sm:text-5xl font-black text-navy-900 tracking-tight">
+                                        ${med.horario}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Botão Discreto de Excluir -->
+                            <button onclick="pedirExclusao('${med.id}')" type="button" aria-label="Excluir ${med.nome}"
+                                class="p-3 text-slate-500 hover:text-red-700 hover:bg-red-50 rounded-2xl transition-colors"
+                                title="Excluir remédio">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Nome do Medicamento e Dosagem -->
+                        <div class="mb-6 space-y-2">
+                            <h2 class="text-3xl sm:text-4xl font-black text-navy-900 leading-tight">
+                                ${med.nome}
+                            </h2>
+                            <p class="text-xl sm:text-2xl font-bold text-slate-700">
+                                ${med.dosagem}
+                            </p>
+                        </div>
+
+                        <!-- Botão de Ação Gigante -->
+                        ${med.tomado ? `
+                            <div class="space-y-3">
+                                <div class="w-full bg-emerald-600 text-white font-black text-2xl py-5 px-6 rounded-2xl text-center shadow-sm flex items-center justify-center gap-3">
+                                    <span>TOMADO ✓</span>
+                                    <span class="text-lg font-bold bg-emerald-800 px-3 py-1 rounded-xl">
+                                        às ${med.horaTomado}
+                                    </span>
+                                </div>
+                                <button onclick="desmarcarTomado('${med.id}')" type="button"
+                                    class="w-full text-slate-700 hover:text-navy-900 underline font-bold text-lg py-2">
+                                    Marquei sem querer (Desfazer)
+                                </button>
+                            </div>
+                        ` : `
+                            <button onclick="marcarComoTomado('${med.id}')" type="button"
+                                class="w-full bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-2xl sm:text-3xl py-6 px-6 rounded-2xl shadow-lg border-b-4 border-emerald-900 transition-transform active:scale-98 flex items-center justify-center gap-3">
+                                <span>TOMEI O REMÉDIO</span>
+                            </button>
+                        `}
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function marcarComoTomado(id, veioDoAlarme = false) {
+            const med = medicamentos.find(m => m.id === id);
+            if (!med) return;
+
+            const agora = new Date();
+            const horas = String(agora.getHours()).padStart(2, '0');
+            const minutos = String(agora.getMinutes()).padStart(2, '0');
+
+            med.tomado = true;
+            med.horaTomado = `${horas}:${minutos}`;
+
+            salvarNoStorage();
+            renderizarLista();
+            tocarSomConfirmacao();
+            mostrarToast(`Ótimo! ${med.nome} registrado às ${med.horaTomado}.`, '✅');
+        }
+
+        function desmarcarTomado(id) {
+            const med = medicamentos.find(m => m.id === id);
+            if (!med) return;
+
+            med.tomado = false;
+            med.horaTomado = null;
+
+            salvarNoStorage();
+            renderizarLista();
+            mostrarToast(`${med.nome} voltou para a lista pendente.`, '↩️');
+        }
+
+        /**
+         * FORMULÁRIO DE ADICIONAR REMÉDIO
+         */
+        function alternarFormulario() {
+            const formSec = document.getElementById('form-section');
+            const btnText = document.getElementById('text-toggle-form');
+            const estaOculto = formSec.classList.contains('hidden');
+
+            if (estaOculto) {
+                formSec.classList.remove('hidden');
+                btnText.textContent = 'Fechar Formulário';
+                document.getElementById('med-name').focus();
+            } else {
+                formSec.classList.add('hidden');
+                btnText.textContent = 'Adicionar Novo Remédio';
+                document.getElementById('med-form').reset();
+            }
+        }
+
+        function salvarMedicamento(event) {
+            event.preventDefault();
+            inicializarAudio();
+
+            const nome = document.getElementById('med-name').value.trim();
+            const horario = document.getElementById('med-time').value;
+            const tipo = document.getElementById('med-type').value;
+            const dosagem = document.getElementById('med-dosage').value.trim();
+
+            if (!nome || !horario || !dosagem) return;
+
+            const novoMed = {
+                id: 'med-' + Date.now(),
+                nome,
+                horario,
+                tipo,
+                dosagem,
+                tomado: false,
+                horaTomado: null
+            };
+
+            medicamentos.push(novoMed);
+            salvarNoStorage();
+            renderizarLista();
+            alternarFormulario();
+            mostrarToast(`Remédio "${nome}" adicionado para às ${horario}!`, '💊');
+        }
+
+        /**
+         * MODAIS DE CONFIRMAÇÃO PERSONALIZADOS (Excluir / Reiniciar Dia)
+         */
+        function abrirModalConfirmacao(titulo, descricao, callbackConfirmar) {
+            document.getElementById('confirm-modal-title').textContent = titulo;
+            document.getElementById('confirm-modal-desc').textContent = descricao;
+
+            const btnSim = document.getElementById('confirm-modal-yes');
+            btnSim.onclick = () => {
+                callbackConfirmar();
+                fecharModalConfirmacao();
+            };
+
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        function fecharModalConfirmacao() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+        }
+
+        function pedirExclusao(id) {
+            const med = medicamentos.find(m => m.id === id);
+            if (!med) return;
+
+            abrirModalConfirmacao(
+                `Excluir ${med.nome}?`,
+                'Este remédio será removido da sua lista diária.',
+                () => {
+                    medicamentos = medicamentos.filter(m => m.id !== id);
+                    salvarNoStorage();
+                    renderizarLista();
+                    mostrarToast(`${med.nome} foi removido.`, '🗑️');
+                }
+            );
+        }
+
+        function abrirModalReiniciar() {
+            abrirModalConfirmacao(
+                'Iniciar um Novo Dia?',
+                'Todos os remédios voltarão para "Não Tomado" para você acompanhar o dia de hoje.',
+                () => {
+                    medicamentos.forEach(m => {
+                        m.tomado = false;
+                        m.horaTomado = null;
+                    });
+                    medicamentosSilenciadosNesteMinuto.clear();
+                    salvarNoStorage();
+                    renderizarLista();
+                    mostrarToast('Lista reiniciada para um novo dia!', '🌅');
+                }
+            );
+        }
+
+        /**
+         * TOAST DE FEEDBACK VISUAL
+         */
+        let toastTimeout = null;
+        function mostrarToast(mensagem, icone = '✅') {
+            const box = document.getElementById('toast-box');
+            document.getElementById('toast-message').textContent = mensagem;
+            document.getElementById('toast-icon').textContent = icone;
+
+            box.classList.remove('hidden');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
